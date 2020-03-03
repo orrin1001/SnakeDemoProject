@@ -36,6 +36,7 @@ pipeline {
 				sh "echo Post-to-dockerhub stage"
 				docker.withRegistry('https://registry.hub.docker.com','docker_cred') {
 					app.push("latest")
+				}
 			}
 		}
 	}
