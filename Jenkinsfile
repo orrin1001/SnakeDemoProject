@@ -1,5 +1,7 @@
 pipeline {  	
-    agent any
+    agent{
+	    node { label 'AppServer'} 
+	    }
     stages{
         stage('Cloning Git') {
             steps{
