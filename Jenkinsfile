@@ -1,7 +1,7 @@
-pipeline {  
-	def app
+pipeline {  	
     agent any
     stages{
+	    def app
         stage('Cloning Git') {
             steps{
                 /* Let's make sure we have the repository cloned to our workspace */
