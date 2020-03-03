@@ -1,54 +1,56 @@
 pipeline {  
-    agent any
-    stages{
-        stage('Cloning Git') {
-            steps{
-                /* Let's make sure we have the repository cloned to our workspace */
-                checkout scm
-            }            
-        }  
-    
-        stage('Parallel SAST'){
-            parallel{
-                stage('SNYK SAST'){
-                    steps{
-                        echo 'Parallel SAST with SNYK'
-                        build 'SAST-SNYK'
-                    } 
-                }
-                stage('Sonar SAST'){
-                    steps{
-                         echo 'Parallel SAST with Sonar'
-                        build 'Sonar-SAST'
-                    }
-                }
-            }
-        }
-		
-		stage('Build-and-Tag') {
+	agent {
+		node{label 'AppServer'}
+	}
+	
+	stages{
+		stage('Cloning Git') {
 			steps{
-				/* This builds the actual image; synonymous to
-				* docker build on the command line */
-				sh "echo Build-and-Tag stage"
-				app = docker.build("orrin1001/snake")
+				/* Let's make sure we have the repository cloned to our workspace */
+				checkout scm
+			}
+		}  
+		
+		stage('Parallel SAST'){
+			parallel{
+				stage('SNYK SAST'){
+					steps{
+						echo 'Parallel SAST with SNYK'
+						build 'SAST-SNYK'
+					} 
+				}
+				
+				stage('Sonar SAST'){
+					steps{
+						echo 'Parallel SAST with Sonar'
+						build 'Sonar-SAST'
+					}
+				}
 			}
 		}
 		
-		stage('Post-to-dockerhub') {    
+		stage('Build-Tag-Push') {
 			steps{
-				sh "echo Post-to-dockerhub stage"
-				docker.withRegistry('https://registry.hub.docker.com','docker_cred') {
-					app.push("latest")
+				script{
+					/* This builds the actual image; synonymous to
+					* docker build on the command line */
+					def app
+					sh "echo Build-and-Tag stage"
+					app = docker.build("orrin1001/snake")
+					sh "echo Post-to-dockerhub stage"
+					docker.withRegistry('https://registry.hub.docker.com','docker_cred') {
+						app.push("latest")
+					}
 				}
 			}
 		}
 		
 		stage('Aqua Image Scanner'){
-            steps{
+			steps{
 				sh "echo Image Scanner with Aqua stage"
-                build 'ImageScanner-Aqua'
+				build 'ImageScanner-Aqua'
 			}
-        }
+		}
 		
 		stage('Pull-image-server') {
 			steps{
@@ -65,10 +67,10 @@ pipeline {
 		}
 		
 		stage('OWASP ZAP DAST'){
-            steps{
+			steps{
 				sh "echo DAST with OWASP ZAP stage" 
-                build 'DAST-OWASP-ZAP'
+				build 'DAST-OWASP-ZAP'
 			}
-        }
-    }
+		}
+	}
 }
