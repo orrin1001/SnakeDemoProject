@@ -5,14 +5,14 @@ node ('DevSecOps_App'){
        checkout scm
     }  
     
-    stage('SNYK SAST'){
+    /*stage('SNYK SAST'){
 		sh "echo SAST with SNYK stage"
         build 'SAST-SNYK'
-    }
-    /*stage('Sonar SAST'){
+    }*/
+    stage('Sonar SAST'){
         sh "echo SAST with Sonar stage"
         build 'Sonar-SAST'
-    }*/
+    }
     
     
     
