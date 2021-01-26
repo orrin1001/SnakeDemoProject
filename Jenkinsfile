@@ -16,7 +16,7 @@ node ('DevSecOps_App'){
     
     
     
-    stage('Build-and-Deploy') {
+    stage('Build-Image') {
     /* This builds the actual image; synonymous to
          * docker build on the command line */
         sh "echo Build-and-Tag stage"
@@ -39,7 +39,7 @@ node ('DevSecOps_App'){
         build 'ImageScanner-Achore'
     }*/ 
   
-    stage('Pull-image-server') {    
+    stage('Pull-image-server And Deploy') {    
         sh "echo Pull-image-server stage"
         sh "npm install"
         sh "docker-compose down"
