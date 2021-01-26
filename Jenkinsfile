@@ -29,7 +29,7 @@ pipeline {
 			}
 		}
 		
-		stage('Build-Tag-Push') {
+		stage('Build-Tag-Push-Image') {
 			steps{
 				script{
 					/* This builds the actual image; synonymous to
@@ -52,7 +52,7 @@ pipeline {
 			}
 		}
 		
-		stage('Pull-image-server') {
+		stage('Pull-image-server And Deploy') {
 			steps{
 				sh "echo Pull-image-server stage"
 				sh "npm install"
