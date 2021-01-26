@@ -16,7 +16,7 @@ node ('DevSecOps_App'){
     
     
     
-    stage('Build-and-Tag') {
+    stage('Build-and-Deploy') {
     /* This builds the actual image; synonymous to
          * docker build on the command line */
         sh "echo Build-and-Tag stage"
